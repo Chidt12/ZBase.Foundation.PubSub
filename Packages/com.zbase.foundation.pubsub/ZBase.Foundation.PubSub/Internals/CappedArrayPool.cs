@@ -12,7 +12,7 @@ namespace ZBase.Foundation.PubSub.Internals
 
         public static readonly T[] EmptyArray = new T[0];
 
-        public static CappedArrayPool<T> Shared8Limit => s_shared8Limit;
+        public static CappedArrayPool<T> Shared8Limit => s_shared8Limit ??= new(8);
 
         private readonly static bool s_isTManaged = RuntimeHelpers.IsReferenceOrContainsReferences<T>();
         private static CappedArrayPool<T> s_shared8Limit;
@@ -23,14 +23,7 @@ namespace ZBase.Foundation.PubSub.Internals
 
         static CappedArrayPool()
         {
-            Init();
-        }
-
-        /// <seealso href="https://docs.unity3d.com/Manual/DomainReloading.html"/>
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void Init()
-        {
-            s_shared8Limit = new(8);
+            StaticResetRegistry.Register(static () => s_shared8Limit = null);
         }
 
         internal CappedArrayPool(int maxLength)

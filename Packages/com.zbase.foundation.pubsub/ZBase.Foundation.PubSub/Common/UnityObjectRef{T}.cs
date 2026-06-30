@@ -36,7 +36,11 @@ namespace ZBase.Foundation.PubSub
             }
 #endif
 
+#if UNITY_6000_0_OR_NEWER
+            return UnityEngine.Resources.EntityIdToObject(_instanceId) as T;
+#else
             return UnityEngine.Resources.InstanceIDToObject(_instanceId) as T;
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

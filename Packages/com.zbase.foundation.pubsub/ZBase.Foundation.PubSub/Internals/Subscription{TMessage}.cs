@@ -9,18 +9,11 @@ namespace ZBase.Foundation.PubSub
     {
         private static Subscription<TMessage> s_none;
 
-        public static Subscription<TMessage> None => s_none;
+        public static Subscription<TMessage> None => s_none ??= new(default, default);
 
         static Subscription()
         {
-            Init();
-        }
-
-        /// <seealso href="https://docs.unity3d.com/Manual/DomainReloading.html"/>
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        static void Init()
-        {
-            s_none = new(default, default);
+            StaticResetRegistry.Register(static () => s_none = null);
         }
 
         private IHandler<TMessage> _handler;
